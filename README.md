@@ -1,0 +1,1 @@
+TwitterBot connects to the twitter API to send a tweet with Raspberry Pi status information. TwitterBotText connects to the twitter API to send a tweet with customized text + date/time status information. Startup bash script runs on a @reboot cronjob to tweet out information on any scheduled or unscheduled reboot.
