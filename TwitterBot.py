@@ -4,10 +4,12 @@ from time import localtime, strftime
 from twython import Twython
 
 # CONSTANTS
-CONSUMER_KEY='P105USm5vwonG8PDCiuMPbDea'
-CONSUMER_SECRET='mL2X18a7tViSFiUUw33DoWj652La4tQl0vmcen6x2lH5HSkVV9'
-ACCESS_TOKEN='921503207616065539-mU9LOrWaopR3Mj6azxssXuA22flUPht'
-ACCESS_SECRET='CEkjmeHwGHsctjDs7LPSyaiNu9vLnYDsyzZgjZW4sufrS'
+f = open("tokens.txt", "r")
+CONSUMER_KEY= f.readline().strip()
+CONSUMER_SECRET= f.readline().strip()
+ACCESS_TOKEN= f.readline().strip()
+ACCESS_SECRET= f.readline().strip()
+f.close()
 
 #Create a copy of the Twython object with all our keys and secrets to allow easy commands.
 api = Twython(CONSUMER_KEY,CONSUMER_SECRET,ACCESS_TOKEN,ACCESS_SECRET)
