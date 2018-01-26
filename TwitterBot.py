@@ -1,28 +1,45 @@
 #!/usr/bin/env python
-import os
-from time import localtime, strftime
+
+# pylint: disable=C0301, C0111, R0914, E0401
+
+import json
+from coinmarketcap import Market
 from twython import Twython
 
-# CONSTANTS
-f = open("/home/pi/twitterbot/tokens.txt", "r")
-CONSUMER_KEY= f.readline().strip()
-CONSUMER_SECRET= f.readline().strip()
-ACCESS_TOKEN= f.readline().strip()
-ACCESS_SECRET= f.readline().strip()
-f.close()
+# Constants
+def main():
 
-#Create a copy of the Twython object with all our keys and secrets to allow easy commands.
-api = Twython(CONSUMER_KEY,CONSUMER_SECRET,ACCESS_TOKEN,ACCESS_SECRET)
+    ''' Run the tweet script '''
 
-# Celsius to Fahrenheit Converted
-def ctof(temp):
-	return str(float(temp)*(9/5)+32)
+    with open('tokens.txt', 'r') as readfile:
+        consumer_key = readfile.readline().strip()
+        consumer_secret = readfile.readline().strip()
+        access_token = readfile.readline().strip()
+        access_secret = readfile.readline().strip()
 
-#Using our newly created object, utilize the update_status to send in the text passed in through CMD
-cmd = '/opt/vc/bin/vcgencmd measure_temp'
-line = os.popen(cmd).readline().strip()
-temp = line.split('=')[1].split("'")[0]
-tempf = ctof(temp)
-time = strftime("%m-%d-%Y %H:%M:%S", localtime())
-date, _time = time.split(' ')
-api.update_status(status='CPU temperature is '+temp+' C | ' + tempf + ' F\n' + 'Current time is ' + _time  + '\nCurrent date is ' +  date)
+    # Create a copy of the Twython object with all our keys and secrets to allow eas$
+    api = Twython(consumer_key, consumer_secret, access_token, access_secret)
+
+    market = Market()
+    crypto = market.ticker(limit=200)
+    coins_to_tweet = []
+    positive_percent_threshold = 20.0
+    negative_percent_threshold = -20.0
+
+    for currency in crypto:
+        hourly_percent = currency.get('percent_change_1h', '0.0')
+        if hourly_percent:
+            hourly_percent = float(hourly_percent)
+            if hourly_percent >= positive_percent_threshold or hourly_percent <= negative_percent_threshold:
+                name = currency.get('name', 'null')
+                symbol = currency.get('symbol', 'null')
+                url = 'https://coinmarketcap.com/currencies/' + currency.get('id', 'null')
+                hourly_percent = format(hourly_percent, ',.2f') + '%'
+                coins_to_tweet.append([name, symbol, str(hourly_percent), url])
+
+    # Format: [name, symbol, hourly_percent, url] all strings
+    for coin in coins_to_tweet:
+        api.update_status(status=coin[0] + '(' + coin[1] + ') has changed ' + coin[2] + ' in the last hour!\n\n' + coin[3])
+
+if __name__ == '__main__':
+    main()
