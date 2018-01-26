@@ -21,10 +21,10 @@ def main():
     api = Twython(consumer_key, consumer_secret, access_token, access_secret)
 
     market = Market()
-    crypto = market.ticker(limit=200)
+    crypto = market.ticker(limit=500)
     coins_to_tweet = []
-    positive_percent_threshold = 10.0
-    negative_percent_threshold = -10.0
+    positive_percent_threshold = 15.0
+    negative_percent_threshold = -25.0
 
     for currency in crypto:
         hourly_percent = currency.get('percent_change_1h', '0.0')
