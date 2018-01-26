@@ -3,10 +3,24 @@
 # pylint: disable=C0301, C0111, R0914, E0401
 
 import json
+import discord
+from discord.ext import commands
 from coinmarketcap import Market
 from twython import Twython
 
-# Constants
+# define bot + data
+bot = commands.Bot(command_prefix="?")
+coins_to_tweet = []
+
+@bot.event
+async def on_ready():
+    text = '```https://twitter.com/cmccryptoalerts\n\n'
+    for coin in coins_to_tweet:
+        text += coin[0] + '(' + coin[1] + ') has changed ' + coin[2] + ' in the last hour!\n'
+    text += '```'
+    await bot.send_message(bot.get_channel('406328703304335371'), text)
+    await bot.logout()
+
 def main():
 
     ''' Run the tweet script '''
@@ -42,7 +56,16 @@ def main():
 
     # Format: [name, symbol, hourly_percent, url] all strings
     for coin in coins_to_tweet:
-        api.update_status(status=coin[0] + '(' + coin[1] + ') has changed ' + coin[2] + ' in the last hour!\n\n' + coin[3])
+        text = coin[0] + '(' + coin[1] + ') has changed ' + coin[2] + ' in the last hour!\n\n' + coin[3]
+        api.update_status(status=text)
+
+    return coins_to_tweet
 
 if __name__ == '__main__':
-    main()
+    coins_to_tweet = main()
+
+    with open('discordcred.txt', 'r') as readfile:
+        email = readfile.readline().strip()
+        password = readfile.readline().strip()
+
+    bot.run(email, password)
