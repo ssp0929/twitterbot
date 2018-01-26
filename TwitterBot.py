@@ -4,7 +4,7 @@ from time import localtime, strftime
 from twython import Twython
 
 # CONSTANTS
-f = open("tokens.txt", "r")
+f = open("/home/pi/twitterbot/tokens.txt", "r")
 CONSUMER_KEY= f.readline().strip()
 CONSUMER_SECRET= f.readline().strip()
 ACCESS_TOKEN= f.readline().strip()
