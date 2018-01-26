@@ -24,7 +24,7 @@ def main():
     crypto = market.ticker(limit=500)
     coins_to_tweet = []
     positive_percent_threshold = 15.0
-    negative_percent_threshold = -25.0
+    negative_percent_threshold = -15.0
 
     for currency in crypto:
         hourly_percent = currency.get('percent_change_1h', '0.0')
