@@ -14,11 +14,12 @@ coins_to_tweet = []
 
 @bot.event
 async def on_ready():
-    text = '```https://twitter.com/cmccryptoalerts\n\n'
-    for coin in coins_to_tweet:
-        text += coin[0] + '(' + coin[1] + ') has changed ' + coin[2] + ' in the last hour!\n'
-    text += '```'
-    await bot.send_message(bot.get_channel('406328703304335371'), text)
+    if coins_to_tweet:
+        text = '```https://twitter.com/cmccryptoalerts\n\n'
+        for coin in coins_to_tweet:
+            text += coin[0] + '(' + coin[1] + ') has changed ' + coin[2] + ' in the last hour!\n'
+        text += '```'
+        await bot.send_message(bot.get_channel('406328703304335371'), text)
     await bot.logout()
 
 def main():
@@ -35,10 +36,10 @@ def main():
     api = Twython(consumer_key, consumer_secret, access_token, access_secret)
 
     market = Market()
-    crypto = market.ticker(limit=500)
+    crypto = market.ticker(limit=100)
     coins_to_tweet = []
-    positive_percent_threshold = 20.0
-    negative_percent_threshold = -20.0
+    positive_percent_threshold = 10.0
+    negative_percent_threshold = -10.0
 
     for currency in crypto:
         hourly_percent = currency.get('percent_change_1h', '0.0')
@@ -55,9 +56,10 @@ def main():
         json.dump(coins_to_tweet, outfile)
 
     # Format: [name, symbol, hourly_percent, url] all strings
-    for coin in coins_to_tweet:
-        text = coin[0] + '(' + coin[1] + ') has changed ' + coin[2] + ' in the last hour!\n\n' + coin[3]
-        api.update_status(status=text)
+    if coins_to_tweet:
+        for coin in coins_to_tweet:
+            text = coin[0] + '(' + coin[1] + ') has changed ' + coin[2] + ' in the last hour!\n\n' + coin[3]
+            api.update_status(status=text)
 
     return coins_to_tweet
 
