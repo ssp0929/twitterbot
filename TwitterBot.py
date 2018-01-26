@@ -36,7 +36,7 @@ def main():
     api = Twython(consumer_key, consumer_secret, access_token, access_secret)
 
     market = Market()
-    crypto = market.ticker(limit=100)
+    crypto = market.ticker(limit=200)
     coins_to_tweet = []
     positive_percent_threshold = 10.0
     negative_percent_threshold = -10.0
