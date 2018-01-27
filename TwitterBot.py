@@ -17,7 +17,7 @@ async def on_ready():
     if coins_to_tweet:
         text = '```https://twitter.com/cmccryptoalerts\n\n'
         for coin in coins_to_tweet:
-            text += coin[0] + '(' + coin[1] + ') has changed ' + coin[2] + ' in the last hour!\n'
+            text += coin[0] + '(' + coin[1] + ') ' + coin[2] + ' this hour (' + coin[3] + ' today)\n'
         text += '```'
         await bot.send_message(bot.get_channel('406328703304335371'), text)
     await bot.logout()
@@ -43,14 +43,18 @@ def main():
 
     for currency in crypto:
         hourly_percent = currency.get('percent_change_1h', '0.0')
+        daily_percent = currency.get('percent_change_24h', '0.0')
         if hourly_percent:
             hourly_percent = float(hourly_percent)
+        if daily_percent:
+            daily_percent = float(daily_percent)
             if hourly_percent >= positive_percent_threshold or hourly_percent <= negative_percent_threshold:
                 name = currency.get('name', 'null')
                 symbol = currency.get('symbol', 'null')
                 url = 'https://coinmarketcap.com/currencies/' + currency.get('id', 'null')
                 hourly_percent = format(hourly_percent, ',.2f') + '%'
-                coins_to_tweet.append([name, symbol, str(hourly_percent), url])
+                daily_percent = format(daily_percent, ',.2f') + '%'
+                coins_to_tweet.append([name, symbol, str(hourly_percent), str(daily_percent), url])
 
     with open('log.json', 'w') as outfile:
         json.dump(coins_to_tweet, outfile)
@@ -58,7 +62,7 @@ def main():
     # Format: [name, symbol, hourly_percent, url] all strings
     if coins_to_tweet:
         for coin in coins_to_tweet:
-            text = coin[0] + '(' + coin[1] + ') has changed ' + coin[2] + ' in the last hour!\n\n' + coin[3]
+            text = coin[0] + '(' + coin[1] + ') ' + coin[2] + ' this hour (' + coin[3] + ' today)\n' + coin[4]
             api.update_status(status=text)
 
     return coins_to_tweet
