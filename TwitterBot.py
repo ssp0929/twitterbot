@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# pylint: disable=C0301, C0111, R0914, E0401
+# pylint: disable=C0301, C0111, R0914, E0401, C0103
 
 import json
 import discord
@@ -38,8 +38,8 @@ def main():
     market = Market()
     crypto = market.ticker(limit=200)
     coins_to_tweet = []
-    positive_percent_threshold = 10.0
-    negative_percent_threshold = -10.0
+    positive_percent_threshold = 15.0
+    negative_percent_threshold = -15.0
 
     for currency in crypto:
         hourly_percent = currency.get('percent_change_1h', '0.0')
@@ -62,7 +62,7 @@ def main():
     # Format: [name, symbol, hourly_percent, url] all strings
     if coins_to_tweet:
         for coin in coins_to_tweet:
-            text = coin[0] + '(' + coin[1] + ') ' + coin[2] + ' this hour (' + coin[3] + ' today)\n' + coin[4]
+            text = coin[0] + '(' + coin[1] + ') ' + coin[2] + ' this hour (' + coin[3] + ' today)\n#' + coin[0] + ' #' + coin[1] + '\n' + coin[4]
             api.update_status(status=text)
 
     return coins_to_tweet
