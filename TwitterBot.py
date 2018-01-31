@@ -42,19 +42,26 @@ def main():
     negative_percent_threshold = -15.0
 
     for currency in crypto:
-        hourly_percent = currency.get('percent_change_1h', '0.0')
-        daily_percent = currency.get('percent_change_24h', '0.0')
-        if hourly_percent:
-            hourly_percent = float(hourly_percent)
-        if daily_percent:
-            daily_percent = float(daily_percent)
-            if hourly_percent >= positive_percent_threshold or hourly_percent <= negative_percent_threshold:
-                name = currency.get('name', 'null')
-                symbol = currency.get('symbol', 'null')
-                url = 'https://coinmarketcap.com/currencies/' + currency.get('id', 'null')
-                hourly_percent = format(hourly_percent, ',.2f') + '%'
-                daily_percent = format(daily_percent, ',.2f') + '%'
-                coins_to_tweet.append([name, symbol, str(hourly_percent), str(daily_percent), url])
+        hourly_percent = float(currency.get('percent_change_1h', '0.0'))
+        daily_percent = float(currency.get('percent_change_24h', '0.0'))
+
+        if hourly_percent >= positive_percent_threshold or hourly_percent <= negative_percent_threshold:
+            name = currency.get('name', 'null')
+            symbol = currency.get('symbol', 'null')
+            url = 'https://coinmarketcap.com/currencies/' + currency.get('id', 'null')
+            usd = float(currency.get('price_usd', '0.0'))
+            usd_ = usd
+            btc = format(float(currency.get('price_btc', '0.0')), ',f')
+            eth = market.ticker('ethereum')[0].get('price_usd')
+            hourly_percent = format(hourly_percent, ',.2f') + '%'
+            daily_percent = format(daily_percent, ',.2f') + '%'
+            if usd >= 1.0:
+                usd = format(float(usd), ',.2f')
+            elif usd < 1.0:
+                usd = format(float(usd), ',f')
+            if usd != 0:
+                eth = format(float(usd_)/float(eth), ',f')
+            coins_to_tweet.append([name, symbol, str(hourly_percent), str(daily_percent), url, str(usd), str(btc), str(eth)])
 
     with open('log.json', 'w') as outfile:
         json.dump(coins_to_tweet, outfile)
@@ -62,7 +69,7 @@ def main():
     # Format: [name, symbol, hourly_percent, url] all strings
     if coins_to_tweet:
         for coin in coins_to_tweet:
-            text = coin[0] + '(' + coin[1] + ') ' + coin[2] + ' this hour (' + coin[3] + ' today)\n#' + coin[0].split(' ').join('') + ' #' + coin[1] + '\n' + coin[4]
+            text = coin[0] + '(' + coin[1] + ') ' + coin[2] + ' this hour (' + coin[3] + ' today)\n$' + coin[5] + ' | ' + coin[6] + ' BTC | ' + coin[7] + ' ETH\n#' + ''.join(coin[0].split(' ')) + ' #' + coin[1] + '\n' + coin[4]
             api.update_status(status=text)
 
     return coins_to_tweet
