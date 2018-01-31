@@ -62,7 +62,7 @@ def main():
     # Format: [name, symbol, hourly_percent, url] all strings
     if coins_to_tweet:
         for coin in coins_to_tweet:
-            text = coin[0] + '(' + coin[1] + ') ' + coin[2] + ' this hour (' + coin[3] + ' today)\n#' + coin[0] + ' #' + coin[1] + '\n' + coin[4]
+            text = coin[0] + '(' + coin[1] + ') ' + coin[2] + ' this hour (' + coin[3] + ' today)\n#' + ' '.split(coin[0]).strip() + ' #' + coin[1] + '\n' + coin[4]
             api.update_status(status=text)
 
     return coins_to_tweet
