@@ -17,7 +17,7 @@ async def on_ready():
     if coins_to_tweet:
         text = '```https://twitter.com/cmccryptoalerts\n\n'
         for coin in coins_to_tweet:
-            text += coin[0] + ' (' + coin[1] + ') ' + coin[2] + ' this hour (' + coin[3] + ' today)\n$' + coin[5] + ' | ' + coin[6] + ' BTC | ' + coin[7] + ' ETH\n'
+            text += coin[0] + ' (' + coin[1] + ') ' + coin[2] + ' this hour (' + coin[3] + ' today)\n$' + coin[5] + ' | ' + coin[6] + ' BTC | ' + coin[7] + ' ETH\n\n'
         text += '```'
         await bot.send_message(bot.get_channel('406328703304335371'), text)
     await bot.logout()
