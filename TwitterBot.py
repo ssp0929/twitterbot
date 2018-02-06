@@ -69,7 +69,10 @@ def main():
     # Format: [name, symbol, hourly_percent, url] all strings
     if coins_to_tweet:
         for coin in coins_to_tweet:
-            text = coin[0] + ' (' + coin[1] + ') ' + coin[2] + ' this hour (' + coin[3] + ' today)\n$' + coin[5] + ' | ' + coin[6] + ' BTC | ' + coin[7] + ' ETH\n#' + ''.join(coin[0].split(' ')) + ' #' + coin[1] + '\n' + coin[4]
+            hashtag = ''.join(coin[0].split(' '))
+            if '-' in hashtag:
+                hashtag = hashtag.replace('-', '')
+            text = coin[0] + ' (' + coin[1] + ') ' + coin[2] + ' this hour (' + coin[3] + ' today)\n$' + coin[5] + ' | ' + coin[6] + ' BTC | ' + coin[7] + ' ETH\n#' + hashtag + ' #' + coin[1] + '\n' + coin[4]
             api.update_status(status=text)
 
     return coins_to_tweet
