@@ -44,10 +44,10 @@ def main():
     for currency in crypto:
         hourly_percent = float(currency.get('percent_change_1h', '0.0'))
         if hourly_percent:
-            hourly_percent = format(float(hourly_percent), ',.2f') + '%'
+            hourly_percent = float(hourly_percent)
         daily_percent = float(currency.get('percent_change_24h', '0.0'))
         if daily_percent:
-            daily_percent = format(float(daily_percent), ',.2f') + '%'
+            daily_percent = float(daily_percent)
 
         if hourly_percent >= positive_percent_threshold or hourly_percent <= negative_percent_threshold:
             name = currency.get('name', 'null')
@@ -57,6 +57,8 @@ def main():
             usd_ = usd
             btc = format(float(currency.get('price_btc', '0.0')), ',f')
             eth = market.ticker('ethereum')[0].get('price_usd')
+            hourly_percent = format(hourly_percent, ',.2f') + '%'
+            daily_percent = format(daily_percent, ',.2f') + '%'
             if usd >= 1.0:
                 usd = format(float(usd), ',.2f')
             elif usd < 1.0:
