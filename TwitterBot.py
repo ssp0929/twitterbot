@@ -42,10 +42,10 @@ def main():
     negative_percent_threshold = -15.0
 
     for currency in crypto:
-        hourly_percent = float(currency.get('percent_change_1h', '0.0'))
+        hourly_percent = currency.get('percent_change_1h', '0.0')
         if hourly_percent:
             hourly_percent = float(hourly_percent)
-        daily_percent = float(currency.get('percent_change_24h', '0.0'))
+        daily_percent = currency.get('percent_change_24h', '0.0')
         if daily_percent:
             daily_percent = float(daily_percent)
 
